@@ -6,7 +6,7 @@ type Queue interface {
 	Enqueue(any)
 	Dequeue() any
 	First() any
-	Size() any
+	Size() int
 }
 
 // DoubleLinkeListQueue is a Queue based on double linked lists
