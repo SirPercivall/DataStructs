@@ -86,6 +86,10 @@ func (l *DoubleLinkedList) RemoveHead() {
 	} else {
 		l.head = l.head.next
 	}
+
+	if l.size > 0 {
+		l.size--
+	}
 }
 
 // RemoveHead remove the tail of the list
@@ -94,6 +98,10 @@ func (l *DoubleLinkedList) RemoveTail() {
 		l.head, l.tail = nil, nil
 	} else {
 		l.tail = l.tail.prev
+	}
+
+	if l.size > 0 {
+		l.size--
 	}
 }
 
