@@ -1,6 +1,6 @@
 package datastructs
 
-// TreeNode represent a node of a Tree
+// TreeNode represent a node of a Tree.
 type BinaryTreeNode struct {
 	val    any
 	father *BinaryTreeNode
