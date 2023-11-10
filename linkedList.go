@@ -33,7 +33,7 @@ func (l *LinkedList) GetElement(index int) (val any) {
 	return node.val
 }
 
-// AddElement add the element passed as input at the start of the list
+// AddAtStart add the element passed as input at the start of the list
 func (l *LinkedList) AddAtStart(e any) {
 	newNode := &node{e, l.head}
 	l.head = newNode
