@@ -1,163 +1,104 @@
 package datastructs
 
-// BinaryTreeNode represent a node of a Tree.
-type BinaryTreeNode struct {
-	val    any
-	father *BinaryTreeNode
-	sx     *BinaryTreeNode
-	dx     *BinaryTreeNode
+import (
+	"bufio"
+	"os"
+	"strings"
+)
+
+// TreeNode implements a node of a generic tree
+type TreeNode struct {
+	firstChild  *TreeNode
+	nextBrother *TreeNode
+	val         any
 }
 
-// NewBinaryTreeNode returns a pointer to a BinaryTreeNode initialized with value passed as input.
-func NewBinaryTreeNode(val any) *BinaryTreeNode {
-	if val == nil {
-		return nil
-	} else {
-		return &BinaryTreeNode{val, nil, nil, nil}
-	}
+// NewNode returns a pointer to a TreeNode initialized with val.
+func NewNode(val any) (n *TreeNode) {
+	return &TreeNode{nil, nil, val}
 }
 
 // GetVal returns the value of the node.
-func (node *BinaryTreeNode) GetVal() any {
+func (node *TreeNode) GetVal() (val any) {
 	return node.val
 }
 
-// AddLeft add left child initialized as value passed as input.
-func (node *BinaryTreeNode) AddLeft(val any) {
-	newNode := NewBinaryTreeNode(val)
-	newNode.father = node
-	node.sx = newNode
+// AddChild add passed child to the node.
+func (node *TreeNode) AddChild(other *TreeNode) {
+	child := node.firstChild
+	if child != nil {
+		for child.nextBrother != nil {
+			child = child.nextBrother
+		}
+		child.nextBrother = other
+	} else {
+		node.firstChild = other
+	}
 }
 
-// AddRight add right child initialized as value passed as input.
-func (node *BinaryTreeNode) AddRight(val any) {
-	newNode := NewBinaryTreeNode(val)
-	newNode.father = node
-	node.dx = newNode
+// Tree implement a tree data types.
+type Tree struct {
+	root *TreeNode
 }
 
-// BinaryTree represent a tree data type recursively defined as a root and two secondary-trees.
-type BinaryTree struct {
-	root *BinaryTreeNode
-}
-
-// NewBinaryTree returns a pointer to a BinaryTree
-func NewBinaryTree(n *BinaryTreeNode) *BinaryTree {
-	return &BinaryTree{n}
-}
-
-// BreadthFirstSearch perform a breadth-first search on the tree and returns the nodes that satisfy the passed function.
-func (t *BinaryTree) BreadthFirstSearch(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
+// BreadthFirstSearch performs a breadth-first search on the tree and returns a list of the nodes that satysfies the condiiton.
+func (t *Tree) BreadthFirstSearch(condition func(n *TreeNode) bool) (nodes []*TreeNode) {
 	var q Queue = new(DoubleLinkedListQueue)
 	q.Enqueue(t.root)
 	for !q.IsEmpty() {
-		n := q.Dequeue().(*BinaryTreeNode)
+		n := q.Dequeue().(*TreeNode)
 		if n != nil {
 			if condition(n) {
 				nodes = append(nodes, n)
 			}
-			q.Enqueue(n.sx)
-			q.Enqueue(n.dx)
-		}
-	}
 
-	return
-}
-
-// TraversePreorder perform a deep-first search and returns a slice of nodes that satisfies the function.
-func (t *BinaryTree) TraversePreorder(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
-	traversePreorder(t.root, &nodes, condition)
-	return
-}
-
-func traversePreorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition func(n *BinaryTreeNode) bool) {
-	if node != nil {
-		if condition(node) {
-			*nodes = append(*nodes, node)
-		}
-		traversePreorder(node.sx, nodes, condition)
-		traversePreorder(node.dx, nodes, condition)
-	}
-}
-
-// TraverseInorder perform a deep-first search and returns a slice of nodes that satisfies the function.
-func (t *BinaryTree) TraverseInorder(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
-	traverseInorder(t.root, &nodes, condition)
-	return
-}
-
-func traverseInorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition func(n *BinaryTreeNode) bool) {
-	if node != nil {
-		traverseInorder(node.sx, nodes, condition)
-		if condition(node) {
-			*nodes = append(*nodes, node)
-		}
-		traverseInorder(node.dx, nodes, condition)
-	}
-}
-
-// TraversePostorder perform a deep-first search and returns a slice of nodes that satisfies the function.
-func (t *BinaryTree) TraversePostorder(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
-	traversePostorder(t.root, &nodes, condition)
-	return
-}
-
-func traversePostorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition func(n *BinaryTreeNode) bool) {
-	if node != nil {
-		traversePostorder(node.sx, nodes, condition)
-		traversePostorder(node.dx, nodes, condition)
-		if condition(node) {
-			*nodes = append(*nodes, node)
-		}
-	}
-}
-
-// BuildNodeSlice returns a slice of pointers from a slice of any values.
-func BuildNodeSlice(values []any) (nodes []*BinaryTreeNode) {
-	for _, v := range values {
-		if v == nil {
-			nodes = append(nodes, nil)
-		} else {
-			newNode := NewBinaryTreeNode(v)
-			nodes = append(nodes, newNode)
-		}
-	}
-	return
-}
-
-// BuildTreeFromSlice returns a pointer to an instance of BinaryTree, initialized with the slice of nodes.
-// The slice of nodes must be a result of a breadth-first search.
-func BuildTreeFromSlice(sl []any) *BinaryTree {
-	var nodes []*BinaryTreeNode
-	for _, v := range sl {
-		n := NewBinaryTreeNode(v)
-		nodes = append(nodes, n)
-	}
-
-	for i, v := range nodes {
-		// checking if node is a leaf
-		if 2*i+1 < len(nodes) {
-			if v != nil {
-				var sx, dx *BinaryTreeNode
-				sx = nodes[2*i+1]
-
-				if 2*i+2 < len(nodes) {
-					dx = nodes[2*i+2]
-				}
-				v.sx = sx
-				v.dx = dx
-
-				if sx != nil {
-					sx.father = v
-				}
-
-				if dx != nil {
-					dx.father = v
-				}
-
+			child := n.firstChild
+			for child != nil {
+				q.Enqueue(child)
+				child = child.nextBrother
 			}
 		}
 	}
+	return
+}
 
-	return NewBinaryTree(nodes[0])
+// ParseTreeFromFile returns a tree from a file in the correct format.
+// The value are parsed with function 'parseFromStr' passed as input.
+func ParseTreeFromFile[T any](filename string, parseFromStr func(s string) (T, error)) (t *Tree) {
+	// key is height
+	// value is last-visited node of corresponding height
+	nodes := make(map[int]*TreeNode)
+	lines := readLines(filename)
+
+	var node *TreeNode
+	for _, line := range lines {
+		height := strings.Count(line, " ")
+		line = strings.TrimSpace(line)
+
+		val, err := parseFromStr(line)
+		if err != nil {
+			panic(err)
+		}
+		node = NewNode(val)
+		nodes[height] = node
+		if height > 0 {
+			nodes[height-4].AddChild(node)
+		}
+	}
+
+	t = &Tree{nodes[0]} // the root have heght equal zero.
+	return
+}
+
+func readLines(filename string) (res []string) {
+	fp, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	defer fp.Close()
+	scanner := bufio.NewScanner(fp)
+	for scanner.Scan() {
+		res = append(res, scanner.Text())
+	}
+	return
 }
