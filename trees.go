@@ -2,6 +2,7 @@ package datastructs
 
 import (
 	"bufio"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -23,6 +24,11 @@ func (node *TreeNode) GetVal() (val any) {
 	return node.val
 }
 
+// SetVal set the value of the nodes to the value passed as input.
+func (node *TreeNode) SetVal(val any) {
+	node.val = val
+}
+
 // AddChild add passed child to the node.
 func (node *TreeNode) AddChild(other *TreeNode) {
 	child := node.firstChild
@@ -39,6 +45,46 @@ func (node *TreeNode) AddChild(other *TreeNode) {
 // Tree implement a tree data types.
 type Tree struct {
 	root *TreeNode
+}
+
+// TraversePreorder perform a deep-first research and returns a slice of *TreeNode that satisfies the condition.
+func (t *Tree) TraversePreorder(condition func(n *TreeNode) bool) (nodes []*TreeNode) {
+	t.root.traversePreorder(condition, &nodes)
+	return
+}
+
+func (node *TreeNode) traversePreorder(condition func(n *TreeNode) bool, nodes *[]*TreeNode) {
+	if node != nil {
+		// vist to the root
+		if condition(node) {
+			*nodes = append(*nodes, node)
+		}
+		child := node.firstChild
+		for child != nil {
+			child.traversePreorder(condition, nodes)
+			child = child.nextBrother
+		}
+	}
+}
+
+// TraversePostorder perform a deep-first research and returns a slice of *TreeNode that satisfies the condition.
+func (t *Tree) TraversePostorder(condition func(n *TreeNode) bool) (nodes []*TreeNode) {
+	t.root.traversePostorder(condition, &nodes)
+	return
+}
+
+func (node *TreeNode) traversePostorder(condition func(n *TreeNode) bool, nodes *[]*TreeNode) {
+	if node != nil {
+		child := node.firstChild
+		for child != nil {
+			child.traversePostorder(condition, nodes)
+			child = child.nextBrother
+		}
+		// vist to the root
+		if condition(node) {
+			*nodes = append(*nodes, node)
+		}
+	}
 }
 
 // BreadthFirstSearch performs a breadth-first search on the tree and returns a list of the nodes that satysfies the condiiton.
@@ -101,4 +147,23 @@ func readLines(filename string) (res []string) {
 		res = append(res, scanner.Text())
 	}
 	return
+}
+
+// String returns a string representation of the tree.
+func (t *Tree) String() string {
+	var s string
+	t.root.auxString(0, &s)
+	return s
+}
+
+// Auxiliary function for String method.
+func (node *TreeNode) auxString(spaces int, s *string) {
+	if node != nil {
+		*s += strings.Repeat("  ", spaces) + fmt.Sprintf("- %v\n", node.val)
+		child := node.firstChild
+		for child != nil {
+			child.auxString(spaces+1, s)
+			child = child.nextBrother
+		}
+	}
 }
