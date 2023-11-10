@@ -1,6 +1,6 @@
 package datastructs
 
-// TreeNode represent a node of a Tree.
+// BinaryTreeNode represent a node of a Tree.
 type BinaryTreeNode struct {
 	val    any
 	father *BinaryTreeNode
@@ -22,7 +22,7 @@ func (node *BinaryTreeNode) GetVal() any {
 	return node.val
 }
 
-// Left add left child initialized as value passed as input.
+// AddLeft add left child initialized as value passed as input.
 func (node *BinaryTreeNode) AddLeft(val any) {
 	newNode := NewBinaryTreeNode(val)
 	newNode.father = node
@@ -46,7 +46,7 @@ func NewBinaryTree(n *BinaryTreeNode) *BinaryTree {
 	return &BinaryTree{n}
 }
 
-// BreadFirstSearch perform a breadth-first search on the tree and returns the nodes that satisfy the passed function.
+// BreadthFirstSearch perform a breadth-first search on the tree and returns the nodes that satisfy the passed function.
 func (t *BinaryTree) BreadthFirstSearch(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
 	var q Queue = new(DoubleLinkedListQueue)
 	q.Enqueue(t.root)
@@ -73,7 +73,7 @@ func (t *BinaryTree) TraversePreorder(condition func(n *BinaryTreeNode) bool) (n
 func traversePreorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition func(n *BinaryTreeNode) bool) {
 	if node != nil {
 		if condition(node) {
-			(*nodes) = append((*nodes), node)
+			*nodes = append(*nodes, node)
 		}
 		traversePreorder(node.sx, nodes, condition)
 		traversePreorder(node.dx, nodes, condition)
@@ -90,13 +90,13 @@ func traverseInorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition f
 	if node != nil {
 		traverseInorder(node.sx, nodes, condition)
 		if condition(node) {
-			(*nodes) = append((*nodes), node)
+			*nodes = append(*nodes, node)
 		}
 		traverseInorder(node.dx, nodes, condition)
 	}
 }
 
-// TraverseInorder perform a deep-first search and returns a slice of nodes that satisfies the function.
+// TraversePostorder perform a deep-first search and returns a slice of nodes that satisfies the function.
 func (t *BinaryTree) TraversePostorder(condition func(n *BinaryTreeNode) bool) (nodes []*BinaryTreeNode) {
 	traversePostorder(t.root, &nodes, condition)
 	return
@@ -107,12 +107,12 @@ func traversePostorder(node *BinaryTreeNode, nodes *[]*BinaryTreeNode, condition
 		traversePostorder(node.sx, nodes, condition)
 		traversePostorder(node.dx, nodes, condition)
 		if condition(node) {
-			(*nodes) = append((*nodes), node)
+			*nodes = append(*nodes, node)
 		}
 	}
 }
 
-// BuildToNodeSlice returns a slice of pointers from a slice of any values.
+// BuildNodeSlice returns a slice of pointers from a slice of any values.
 func BuildNodeSlice(values []any) (nodes []*BinaryTreeNode) {
 	for _, v := range values {
 		if v == nil {

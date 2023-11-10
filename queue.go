@@ -9,7 +9,7 @@ type Queue interface {
 	Size() int
 }
 
-// DoubleLinkeListQueue is a Queue based on double linked lists
+// DoubleLinkedListQueue is a Queue based on double linked lists
 type DoubleLinkedListQueue struct {
 	DoubleLinkedList
 }

@@ -9,7 +9,7 @@ type Stack interface {
 	Size() int
 }
 
-// LinkedLinkStack is an implementation of Stack based on LinkedList.
+// LinkedListStack is an implementation of Stack based on LinkedList.
 type LinkedListStack struct {
 	LinkedList
 }

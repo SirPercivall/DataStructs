@@ -12,7 +12,7 @@ type doubleNode struct {
 	prev *doubleNode
 }
 
-// doubleLinkedList is a list that is double linked.
+// DoubleLinkedList is a list that is double linked.
 type DoubleLinkedList struct {
 	head *doubleNode
 	tail *doubleNode
@@ -92,7 +92,7 @@ func (l *DoubleLinkedList) RemoveHead() {
 	}
 }
 
-// RemoveHead remove the tail of the list
+// RemoveTail remove the tail of the list
 func (l *DoubleLinkedList) RemoveTail() {
 	if l.size < 2 {
 		l.head, l.tail = nil, nil
